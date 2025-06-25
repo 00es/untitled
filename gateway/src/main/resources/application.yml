@@ -1,0 +1,76 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+#<<< API Gateway / Routes
+      routes:
+        - id: AuthorWorksManagement
+          uri: http://localhost:8082
+          predicates:
+            - Path=/works/**, /workHistories/**, /workStatistics/**, /workLists/**, /workDetails/**, /workHistoryDetails/**, /workHistoryLists/**
+        - id: ReaderExperience
+          uri: http://localhost:8083
+          predicates:
+            - Path=/points/**, /comments/**, /pointHistories/**, /pointBalances/**, /commentDetails/**, /commentLists/**, /myCommentLists/**
+        - id: AdminServiceOperation
+          uri: http://localhost:8084
+          predicates:
+            - Path=/announcements/**, /bestsellerWithHistories/**, /sanctionWithUsers/**, /announcementLists/**, /announcementDetails/**, /bestsellerHistoryDetails/**, /bestsellerHistoryLists/**, /mySanctionStatuses/**, /sanctionDetails/**, /sanctionHistories/**
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+#>>> API Gateway / Routes
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: AuthorWorksManagement
+          uri: http://authorWorksManagement:8080
+          predicates:
+            - Path=/works/**, /workHistories/**, 
+        - id: ReaderExperience
+          uri: http://readerExperience:8080
+          predicates:
+            - Path=/points/**, /comments/**, 
+        - id: AdminServiceOperation
+          uri: http://adminServiceOperation:8080
+          predicates:
+            - Path=/announcements/**, /bestsellerWithHistories/**, /sanctionWithUsers/**, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080

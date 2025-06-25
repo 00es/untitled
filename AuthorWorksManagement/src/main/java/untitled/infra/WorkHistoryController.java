@@ -1,0 +1,42 @@
+package untitled.infra;
+
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import untitled.domain.*;
+
+//<<< Clean Arch / Inbound Adaptor
+
+@RestController
+// @RequestMapping(value="/workHistories")
+@Transactional
+public class WorkHistoryController {
+
+    @Autowired
+    WorkHistoryRepository workHistoryRepository;
+
+    @RequestMapping(
+        value = "/workHistoriesrecordworkhistory",
+        method = RequestMethod.POST,
+        produces = "application/json;charset=UTF-8"
+    )
+    public WorkHistory recordWorkHistory(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        @RequestBody RecordWorkHistoryCommand recordWorkHistoryCommand
+    ) throws Exception {
+        System.out.println(
+            "##### /workHistory/recordWorkHistory  called #####"
+        );
+        WorkHistory workHistory = new WorkHistory();
+        workHistory.recordWorkHistory(recordWorkHistoryCommand);
+        workHistoryRepository.save(workHistory);
+        return workHistory;
+    }
+}
+//>>> Clean Arch / Inbound Adaptor
